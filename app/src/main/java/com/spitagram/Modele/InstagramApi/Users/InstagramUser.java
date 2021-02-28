@@ -1,6 +1,7 @@
-package com.spitagram.instagramApi.Users;
-
+package com.spitagram.Modele.InstagramApi.Users;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.FormatFlagsConversionMismatchException;
 
 public class InstagramUser extends User{
     private String follow;
@@ -16,14 +17,23 @@ public class InstagramUser extends User{
     }
     //methode
     public void addFollowers(String id, String username){
-        followersList.add(new User(id, username));
+        if (!ifContain(id)){
+            followersList.add(new User(id, username));
+        }
     }
-    public void afficheFollowers(){
-        System.out.println("nb followers : " + followersList.size());
-        /*for (User u: followersList){
-            System.out.println(u.getUserName());
-        }*/
+    private boolean ifContain(String id){
+        boolean test = false;
+        for(User u : followersList){
+            if (u.getId().equals(id)){
+                test = true;
+            }
+        }
+        return test;
     }
+    public int getFollowersListSize(){
+        return followersList.size();
+    }
+
     @Override
     public String toString() {
         return "InstagramUser{" +
@@ -50,4 +60,6 @@ public class InstagramUser extends User{
     public void setFollowers(String followers) {
         this.followers = followers;
     }
+
+    public ArrayList<User> getFollowersList(){ return followersList; }
 }

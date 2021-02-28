@@ -1,4 +1,4 @@
-package com.spitagram.instagramApi.Users;
+package com.spitagram.Modele.InstagramApi.Users;
 
 public class User {
     private String userName;
