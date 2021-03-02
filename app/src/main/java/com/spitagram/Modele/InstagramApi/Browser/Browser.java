@@ -1,4 +1,4 @@
-package com.spitagram.Modele.InstagramApi;
+package com.spitagram.Modele.InstagramApi.Browser;
 
 import android.app.Activity;
 import android.content.Context;

@@ -1,8 +1,9 @@
 package com.spitagram.Modele.InstagramApi;
 
 import android.app.Activity;
-import com.spitagram.Modele.InstagramApi.Users.InstagramUser;
 
+import com.spitagram.Modele.InstagramApi.Browser.Browser;
+import com.spitagram.Modele.InstagramApi.Users.InstagramUser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -64,7 +65,7 @@ public class InstagramApp{
                         + user.getId() + "&include_reel=false&fetch_mutual=false&first=" + user.getFollowers();
             }else{
                 url = Config.QUERY_REQUEST + "?query_id=" + Config.QUERY_ID_FOLLOWERS + "&id="
-                        + user.getId() + "&include_reel=true&fetch_mutual=true&first=" + user.getFollowers() + "&after=" + endCursor;
+                        + user.getId() + "&include_reel=true&fetch_mutual=false&first=" + user.getFollowers() + "&after=" + endCursor;
             }
             try {
                 JSONObject reader = browser.getJsonObject(url);
@@ -74,10 +75,6 @@ public class InstagramApp{
                         .getJSONObject("edge_followed_by")
                         .getJSONObject("page_info");
                 //
-                String nb = reader.getJSONObject("data")
-                        .getJSONObject("user")
-                        .getJSONObject("edge_followed_by").getString("count");
-                System.out.println("nb : " + nb);
                 nextPage = pageInfo.getString("has_next_page");
                 if (nextPage.equals("true")){
                     endCursor = pageInfo.getString("end_cursor");
