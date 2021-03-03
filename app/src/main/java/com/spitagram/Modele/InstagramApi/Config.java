@@ -2,6 +2,9 @@ package com.spitagram.Modele.InstagramApi;
 
 public class Config {
     public static String SITE_MAIN = "https://www.instagram.com/";
+    public static String CLASSIC_LOGIN = "https://www.instagram.com/accounts/login/?force_classic_login";
+
+    public static String LOGIN_PASS = "https://www.instagram.com/accounts/onetap/?next=%2F";
 
     public static String QUERY_REQUEST = "https://www.instagram.com/graphql/query/";
     public static String QUERY_ID_FOLLOW = "17874545323001329";
@@ -14,4 +17,10 @@ public class Config {
     public static String STATUT_CONNECTION_CONNECTER = "connected";
     public static String STATUT_CONNECTION_DECONNECTER = "deconnecter";
     public static String STATUT_CONNECTION_FAIL = "fail";
+
+    public static String JSON_KEY_FOLLOW = "edge_follow";
+    public static String JSON_KEY_FOLLOWERS = "edge_followed_by";
+
+    public static int REFRECH_SECONDE = 25000;
+    public static int NB_USER_TAKEN = 10000;
 }

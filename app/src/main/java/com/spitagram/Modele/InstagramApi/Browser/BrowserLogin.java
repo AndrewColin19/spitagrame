@@ -2,12 +2,15 @@ package com.spitagram.Modele.InstagramApi.Browser;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
+import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.spitagram.Controller.LoginController;
+import com.spitagram.Modele.InstagramApi.Config;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +31,7 @@ public class BrowserLogin extends WebView {
     }
 
     private void init(){
+
         WebSettings webSettings = this.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
@@ -37,7 +41,7 @@ public class BrowserLogin extends WebView {
             public void onPageFinished(WebView view, String url) {
                 view.loadUrl("javascript:" + JAVASCRIPT_SCRIPT_TO_EXTRACT_TEXT);
                 view.loadUrl("javascript:window.Android.processContent(" + JAVASCRIPT_FUNCTION_CALL + ");");
-                if(url.equals("https://www.instagram.com/accounts/onetap/?next=%2F")){
+                if(url.equals(Config.LOGIN_PASS)){
                     if(LoginController.connected != true){
                         LoginController.connected = true;
                     }

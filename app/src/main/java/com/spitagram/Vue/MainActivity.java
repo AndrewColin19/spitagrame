@@ -1,24 +1,18 @@
 package com.spitagram.Vue;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import com.spitagram.Modele.InstagramApi.Users.InstagramUser;
+import android.widget.TextView;
+import com.spitagram.Controller.ApiController;
 import com.spitagram.R;
-import com.spitagram.Modele.InstagramApi.InstagramApp;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-
-@SuppressLint("NewApi")
 public class MainActivity extends AppCompatActivity {
 
+    private TextView username, follow, followers,
+            textCardNewFollowers, textCardLoseFollowers, textCardFollow, textCardMutual;
     private Activity activity;
 
     @Override
@@ -27,27 +21,43 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         this.activity = this;
         //user test {wes.off__, pepperlapinebelier, marieamelie.wen, annickd06}
-        WebView web = findViewById(R.id.web);
-        WebSettings webSettings = web.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
-        web.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-        });
-        web.loadUrl("https://www.instagram.com/");
 
-       /* new Thread(new Runnable() {
+        username = findViewById(R.id.userName);
+        follow = findViewById(R.id.userFollow);
+        followers = findViewById(R.id.userFollowers);
+        textCardLoseFollowers = findViewById(R.id.textCardLoseFollowers);
+        textCardFollow = findViewById(R.id.textCardFollow);
+        textCardNewFollowers = findViewById(R.id.textCardNewFollowers);
+        textCardMutual = findViewById(R.id.textCardMutual);
+
+        ApiController apiController = new ApiController(this);
+        apiController.init();
+
+        ExecutorService pool = Executors.newSingleThreadExecutor();
+        pool.submit(new Runnable() {
             @Override
             public void run() {
-                InstagramApp instagramApp = new InstagramApp(activity);
-                user = instagramApp.setUserInfo("wes.off__");
-                int nb = instagramApp.getFollowers(user);
-                System.out.println("nb followers : " + nb);
+                while(ApiController.currentUser == null){
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                drawData();
             }
-        }).start();*/
+        });
+    }
+    public void drawData(){
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (ApiController.currentUser != null){
+                    username.setText("username : " + ApiController.currentUser.getUserName());
+                    follow.setText("follow : " + ApiController.currentUser.getFollow());
+                    followers.setText("followers : "+ ApiController.currentUser.getFollowers());
+                }
+            }
+        });
     }
 }

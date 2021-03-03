@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Vue.SplashScreenActivity">
+    tools:context=".Vue.SplashScreenActivity"
+    android:background="@color/dark_gray">
 
     <ProgressBar
         android:id="@+id/splashProgressBar"
@@ -16,11 +16,12 @@
     <TextView
         android:layout_below="@+id/splashProgressBar"
         android:id="@+id/splashText"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/little_margin"
         android:layout_width="wrap_content"
         android:gravity="center"
         android:layout_height="wrap_content"
-        android:textSize="20dp"
+        android:textSize="@dimen/little_text"
         android:text="Vérification connection à internet..."
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/lite_gray"/>
 </RelativeLayout>

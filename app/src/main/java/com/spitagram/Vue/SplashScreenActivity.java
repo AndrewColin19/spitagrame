@@ -1,5 +1,6 @@
 package com.spitagram.Vue;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -29,7 +30,13 @@ public class SplashScreenActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if(!AppController.isConnectedInternet(activity)){
-                    //TODO fail
+                    while(!AppController.isConnectedInternet(activity)){
+                        try {
+                            Thread.sleep(5000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }else{
                     try {
                         sleep(500);
@@ -38,21 +45,27 @@ public class SplashScreenActivity extends AppCompatActivity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                }
-                setTextSplashText("Vérification Session...");
-                if(LoginController.isconnected(activity)){
-                    Intent intent = new Intent(activity, MainActivity.class);
-                    activity.startActivity(intent);
-                    activity.finish();
-                }else{
-                    Intent intent = new Intent(activity, LoginActivity.class);
-                    activity.startActivity(intent);
-                    activity.finish();
+                    setTextSplashText("Vérification Session...");
+                    if(LoginController.isconnected(activity)){
+                        Intent intent = new Intent(activity, MainActivity.class);
+                        activity.startActivity(intent);
+                        activity.finish();
+                    }else{
+                        Intent intent = new Intent(activity, LoginActivity.class);
+                        activity.startActivity(intent);
+                        activity.finish();
+                    }
                 }
             }
         }).start();
-
     }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+
     public void setTextSplashText(final String text){
         this.runOnUiThread(new Runnable() {
             @Override

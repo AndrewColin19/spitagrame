@@ -1,24 +1,202 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Vue.MainActivity">
+    tools:context=".Vue.MainActivity"
+    android:background="@color/dark_blue">
+
+    <RelativeLayout
+        android:id="@+id/displayInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/little_margin">
+
+        <TextView
+            android:id="@+id/infoTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="INFO USER"
+            android:textColor="@color/lite_gray"
+            android:textSize="@dimen/little_text"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:id="@+id/userName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="username : n/a"
+            android:textColor="@color/lite_gray"
+            android:textSize="@dimen/little_text"
+            android:layout_below="@id/infoTitle"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:id="@+id/userFollow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="follow : n/a"
+            android:textColor="@color/lite_gray"
+            android:textSize="@dimen/little_text"
+            android:layout_below="@id/userName"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:id="@+id/userFollowers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="followers : n/a"
+            android:textColor="@color/lite_gray"
+            android:textSize="@dimen/little_text"
+            android:layout_below="@+id/userFollow"
+            android:layout_centerHorizontal="true"/>
+    </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:weightSum="2">
-        <WebView
-            android:id="@+id/web"
+        android:weightSum="2"
+        android:layout_below="@+id/displayInfo">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:weightSum="2"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:paddingLeft="@dimen/medium_text"
+            android:paddingRight="@dimen/medium_text"
+            android:paddingTop="@dimen/medium_text"
+            android:paddingBottom="@dimen/dual_maring"
+            android:baselineAligned="false">
+
+            <RelativeLayout
+                android:id="@+id/cardNewFollowers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginRight="@dimen/dual_maring"
+                android:background="@color/dark_gray"
+                android:padding="@dimen/medium_text"
+                android:layout_marginEnd="@dimen/dual_maring">
+
+                <ImageView
+                    android:id="@+id/iconCardNewFollowers"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/icon_new_follower"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="icon desc card" />
+
+                <TextView
+                    android:id="@+id/textCardNewFollowers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="value"
+                    android:textSize="@dimen/medium_text"
+                    android:layout_below="@+id/iconCardNewFollowers"
+                    android:textColor="@color/lite_gray"
+                    android:layout_centerHorizontal="true"/>
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/cardLoseFollowers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/dual_maring"
+                android:background="@color/dark_gray"
+                android:padding="@dimen/medium_text">
+
+                <ImageView
+                    android:id="@+id/iconCardLoseFollowers"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/icon_lost_follower"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="icon desc card" />
+                <TextView
+                    android:id="@+id/textCardLoseFollowers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/iconCardLoseFollowers"
+                    android:text="value"
+                    android:textSize="@dimen/medium_text"
+                    android:textColor="@color/lite_gray"
+                    android:layout_centerHorizontal="true"/>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:weightSum="2"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/dual_maring"
+            android:paddingBottom="@dimen/medium_text"
+            android:paddingRight="@dimen/medium_text"
+            android:paddingLeft="@dimen/medium_text">
+
+            <RelativeLayout
+                android:id="@+id/cardFollow"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/dark_gray"
+                android:layout_weight="1"
+                android:layout_marginRight="@dimen/dual_maring"
+                android:padding="@dimen/medium_text"
+                android:layout_marginEnd="@dimen/dual_maring">
+
+                <ImageView
+                    android:id="@+id/iconCardFollow"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/icon_new_follow"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="icon desc card" />
+
+                <TextView
+                    android:id="@+id/textCardFollow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="value"
+                    android:layout_below="@+id/iconCardFollow"
+                    android:textSize="@dimen/medium_text"
+                    android:textColor="@color/lite_gray"
+                    android:layout_centerHorizontal="true" />
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/cardMutual"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/dual_maring"
+                android:background="@color/dark_gray"
+                android:padding="@dimen/medium_text"
+                android:layout_marginStart="@dimen/dual_maring">
+
+                <ImageView
+                    android:id="@+id/iconCardMutual"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/icon_mutual"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="icon desc card" />
+                <TextView
+                    android:id="@+id/textCardMutual"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="value"
+                    android:layout_below="@+id/iconCardMutual"
+                    android:textSize="@dimen/medium_text"
+                    android:textColor="@color/lite_gray"
+                    android:layout_centerHorizontal="true"/>
+            </RelativeLayout>
+        </LinearLayout>
 
     </LinearLayout>
-    <!---->
-
 </RelativeLayout>
