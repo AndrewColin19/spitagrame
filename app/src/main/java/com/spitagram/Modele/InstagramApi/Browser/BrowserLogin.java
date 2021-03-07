@@ -2,15 +2,13 @@ package com.spitagram.Modele.InstagramApi.Browser;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
-import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.spitagram.Controller.LoginController;
-import com.spitagram.Modele.InstagramApi.Config;
+import com.spitagram.Modele.InstagramApi.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,9 +37,10 @@ public class BrowserLogin extends WebView {
         this.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
+                System.out.println("url : " + url);
                 view.loadUrl("javascript:" + JAVASCRIPT_SCRIPT_TO_EXTRACT_TEXT);
                 view.loadUrl("javascript:window.Android.processContent(" + JAVASCRIPT_FUNCTION_CALL + ");");
-                if(url.equals(Config.LOGIN_PASS)){
+                if(url.equals(Utils.LOGIN_PASS) || url.equals(Utils.LOGIN_PASS_FACEBOOK)){
                     if(LoginController.connected != true){
                         LoginController.connected = true;
                     }

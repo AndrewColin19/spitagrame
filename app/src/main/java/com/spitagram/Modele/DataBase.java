@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
 import com.spitagram.Modele.InstagramApi.Users.User;
 
 import java.util.ArrayList;
@@ -14,9 +13,10 @@ public class DataBase extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "spitagramDataBase.db";
     private static final int DATABASE_VERSION = 1;
 
-    private static final String CREATE_TABLE_USER = "CREATE TABLE User ("
+    private static final String CREATE_TABLE_USER = "CREATE TABLE user ("
             + " id int NOT NULL primary key ,"
-            + " username text NOT NULL "
+            + " username text NOT NULL ,"
+            + " multicompte int"
             + ")";
     private static final String CREATE_TABLE_FOLLOW = "CREATE TABLE follow ("
             + " id int NOT NULL primary key ,"
@@ -26,6 +26,9 @@ public class DataBase extends SQLiteOpenHelper {
             + " id int NOT NULL primary key ,"
             + " username text NOT NULL "
             + ")";
+    private static final String DROP_TABLE_USER = "DROP TABLE User";
+    private static final String DROP_TABLE_FOLLOW = "DROP TABLE follow";
+    private static final String DROP_TABLE_FOLLOWERS = "DROP TABLE FOLLOWERS";
 
     public DataBase(Context context) {
         super(context, DATABASE_NAME, null,  DATABASE_VERSION);
@@ -45,6 +48,41 @@ public class DataBase extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_FOLLOW);
         db.execSQL(CREATE_TABLE_FOLLOWERS);
     }
+    public void dropAll(SQLiteDatabase db){
+        db.execSQL(DROP_TABLE_USER);
+        db.execSQL(DROP_TABLE_FOLLOW);
+        db.execSQL(DROP_TABLE_FOLLOWERS);
+    }
+    public User getFollow(User u){
+        User user = null;
+        String req = "SELECT * FROM follow WHERE id =" + u.getId();
+        Cursor cursor = this.getReadableDatabase().rawQuery(req, null);
+        if (cursor.getCount() != 0){
+            cursor.moveToFirst();
+            while(!cursor.isAfterLast()){
+                user = new User(cursor.getInt(cursor.getColumnIndex("id")),
+                        cursor.getString(cursor.getColumnIndex("username")));
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        return user;
+    }
+    public User getFollowers(User u){
+        User user = null;
+        String req = "SELECT * FROM followers WHERE id =" + u.getId();
+        Cursor cursor = this.getReadableDatabase().rawQuery(req, null);
+        if (cursor.getCount() != 0){
+            cursor.moveToFirst();
+            while(!cursor.isAfterLast()){
+                user = new User(cursor.getInt(cursor.getColumnIndex("id")),
+                        cursor.getString(cursor.getColumnIndex("username")));
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        return user;
+    }
     public ArrayList<User> getAllFollow(){
         ArrayList<User> followList = new ArrayList<>();
         String req = "SELECT * FROM follow";
@@ -55,6 +93,7 @@ public class DataBase extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex("username"))));
             cursor.moveToNext();
         }
+        cursor.close();
         return followList;
     }
 
@@ -68,19 +107,31 @@ public class DataBase extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex("username"))));
             cursor.moveToNext();
         }
+        cursor.close();
         return followersList;
+    }
+    public int getNbFollowers(){
+        String req = "SELECT * FROM followers";
+        Cursor cursor = this.getReadableDatabase().rawQuery(req, null);
+        return cursor.getCount();
+    }
+
+    public int getNbFollow(){
+        String req = "SELECT * FROM follow";
+        Cursor cursor = this.getReadableDatabase().rawQuery(req, null);
+        return cursor.getCount();
     }
 
     public void insertFollow(User user){
-        String req = "INSERT INTO VALEURS follow ("
-            + user.getId() + ", "
-            + user.getUserName() + ";";
+        String req = "INSERT INTO follow VALUES("
+            + user.getId() + ", '"
+            + user.getUserName() + "');";
         getWritableDatabase().execSQL(req);
     }
     public void insertFollowers(User user){
-        String req = "INSERT INTO VALEURS followers ("
-                + user.getId() + ", "
-                + user.getUserName() + ";";
+        String req = "INSERT INTO followers VALUES ("
+                + user.getId() + ", '"
+                + user.getUserName() + "');";
         getWritableDatabase().execSQL(req);
     }
     public void deleteFollow(User user){
@@ -92,5 +143,9 @@ public class DataBase extends SQLiteOpenHelper {
         String req = "DELETE FROM followers WHERE id="
                 + user.getId();
         getReadableDatabase().execSQL(req);
+    }
+    public void reset(){
+        this.dropAll(getReadableDatabase());
+        this.creatTable(getReadableDatabase());
     }
 }

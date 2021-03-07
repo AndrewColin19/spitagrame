@@ -23,18 +23,18 @@ public class InstagramLogin {
         while(browserLogin == null) {}
     }
     public String connexionStatut(){
-        JSONObject data = this.browserLogin.getJsonObject(Config.DATA_REQUEST);
+        JSONObject data = this.browserLogin.getJsonObject(Utils.DATA_REQUEST);
         JSONObject viewer;
         try {
             viewer = data.getJSONObject("config").getJSONObject("viewer");
         }catch (Exception e){
             e.getStackTrace();
-            return Config.STATUT_CONNECTION_FAIL;
+            return Utils.STATUT_CONNECTION_FAIL;
         }
         if(viewer != null){
-            return Config.STATUT_CONNECTION_CONNECTER;
+            return Utils.STATUT_CONNECTION_CONNECTER;
         }
-        return Config.STATUT_CONNECTION_DECONNECTER;
+        return Utils.STATUT_CONNECTION_DECONNECTER;
     }
     public void changeActivity(Activity newActivity){
         this.activity = newActivity;

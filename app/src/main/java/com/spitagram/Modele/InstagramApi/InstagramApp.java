@@ -1,12 +1,13 @@
 package com.spitagram.Modele.InstagramApi;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.spitagram.Controller.ApiController;
+import com.spitagram.Modele.DataBase;
 import com.spitagram.Modele.InstagramApi.Browser.Browser;
 import com.spitagram.Modele.InstagramApi.Users.CurrentUser;
 import com.spitagram.Modele.InstagramApi.Users.User;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,10 +18,12 @@ public class InstagramApp{
 
     private Activity activity;
     private Browser browser;
+    private DataBase dataBase;
     public static final String TAG = "InstagrameApp";
 
     public InstagramApp(final Activity activity){
         this.activity = activity;
+        this.dataBase = new DataBase(this.activity);
         this.activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -69,7 +72,7 @@ public class InstagramApp{
      * @return
      */
     private JSONObject getData(){
-        JSONObject jsonObject = browser.getJsonObject(Config.DATA_REQUEST);
+        JSONObject jsonObject = browser.getJsonObject(Utils.DATA_REQUEST);
         return jsonObject;
     }
     /**
@@ -78,44 +81,48 @@ public class InstagramApp{
      * @return
      */
     private JSONObject getJsonUser(String userName) {
-        String url = "https://www.instagram.com/"+ userName +"/?__a=1";
+        // a modifier
+        String url = "https://www.instagram.com/"+ Utils.NAME_COMPTE +"/?__a=1";
         JSONObject jsonObject = browser.getJsonObject(url);
         return jsonObject;
-    }
-    public ArrayList<User> getUnfollow(){
-        ArrayList<User> listUnfollow = new ArrayList<>();
-        return listUnfollow;
     }
 
     public int getFollowers(CurrentUser user){
         user.setFollowersList(getUserList(User.FOLLOWERS));
-        return user.getFollowersListSize();
+        user.setNbfollowers(user.getFollowersListSize());
+        return user.getNbfollowers();
     }
+
     public int getFollow(CurrentUser user){
         user.setFollowList(getUserList(User.FOLLOW));
-        return user.getFollowListSize();
+        user.setNbfollow(user.getFollowListSize());
+        return user.getNbfollow();
     }
 
     private ArrayList<User> getUserList(String type){
         String nextPage = "false";
         String endCursor = "";
         String url = "";
+        String query = Utils.QUERY_ID_FOLLOW;
+        if(type.equals(User.FOLLOWERS)){
+            query = Utils.QUERY_ID_FOLLOWERS;
+        }
         CurrentUser user = ApiController.currentUser;
         ArrayList<User> userList = new ArrayList<>();
         do {
             if(nextPage.equals("false")){
-                url = Config.QUERY_REQUEST + "?query_id=" + Config.QUERY_ID_FOLLOW + "&id="
-                        + user.getId() + "&include_reel=false&fetch_mutual=false&first=" + Config.NB_USER_TAKEN;
+                url = Utils.QUERY_REQUEST + "?query_id=" + query + "&id="
+                        + user.getId() +"&first=" + Utils.NB_USER_TAKEN;
             }else{
-                url = Config.QUERY_REQUEST + "?query_id=" + Config.QUERY_ID_FOLLOW + "&id="
-                        + user.getId() + "&include_reel=true&fetch_mutual=false&first=" + Config.NB_USER_TAKEN + "&after=" + endCursor;
+                url = Utils.QUERY_REQUEST + "?query_id=" + query + "&id="
+                        + user.getId() + "&first=" + Utils.NB_USER_TAKEN + "&after=" + endCursor;
             }
             try {
                 JSONObject reader = browser.getJsonObject(url);
                 //recupere la page info
                 JSONObject pageInfo = reader.getJSONObject("data")
                         .getJSONObject("user")
-                        .getJSONObject("edge_follow")
+                        .getJSONObject(type)
                         .getJSONObject("page_info");
                 //
                 nextPage = pageInfo.getString("has_next_page");
@@ -125,7 +132,7 @@ public class InstagramApp{
                 //recupe le tableau des abonnées
                 JSONArray followerTab = reader.getJSONObject("data")
                         .getJSONObject("user")
-                        .getJSONObject("edge_follow")
+                        .getJSONObject(type)
                         .getJSONArray("edges");
                 for (int i = 0; i < followerTab.length(); i++) {
                     String id = followerTab.getJSONObject(i).getJSONObject("node").getString("id");
@@ -138,5 +145,59 @@ public class InstagramApp{
             }
         }while (nextPage.equals("true"));
         return userList;
+    }
+
+    /**
+     * ajoute les données a la base seulement si il n'y sont pas déja
+     * @param user
+     */
+    public void writeDataBase(CurrentUser user){
+        for (User u : user.getFollowersList()){
+            if (dataBase.getFollowers(u) == null){
+                dataBase.insertFollowers(u);
+            }
+        }
+        for (User u: user.getFollowList()){
+            if (dataBase.getFollow(u) == null){
+                dataBase.insertFollow(u);
+            }
+        }
+    }
+
+    private int getMutual(){
+        int compt = 0;
+        ArrayList<User> followersList = ApiController.currentUser.getFollowersList();
+        ArrayList<User> followList = ApiController.currentUser.getFollowList();
+        for (User s: followersList){
+            for(User user: followList){
+                if (s.getId().equals(user.getId())){
+                    compt++;
+                    Log.d(TAG, "getMutual: username : " + user.getUserName());
+                }
+            }
+        }
+        return compt;
+    }
+    private int getUnfollow(){
+        return ApiController.currentUser.getNbfollowers() - dataBase.getNbFollowers();
+    }
+    private int getNewFollow(){
+        return ApiController.currentUser.getNbfollow() - dataBase.getNbFollow();
+    }
+
+    public int[] getStats(){
+        int unfollow = getUnfollow();
+        int newfollow = getNewFollow();
+        int newfollwers = 0;
+        int mutual = getMutual();
+        if (unfollow > 0){
+            newfollwers = unfollow;
+            unfollow = 0;
+        }
+        if (newfollow < 0){
+            newfollow = 0;
+        }
+        int[] stats = {newfollwers, unfollow, newfollow, mutual};
+        return stats;
     }
 }

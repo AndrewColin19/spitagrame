@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Spitagram</string>
+    <string name="noValue">n/a</string>
 </resources>

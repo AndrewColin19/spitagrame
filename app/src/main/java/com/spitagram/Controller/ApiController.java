@@ -11,6 +11,7 @@ public class ApiController {
     private InstagramApp instagramApp;
     private Activity activity;
     public static CurrentUser currentUser;
+    public static boolean stats = false;
 
     public ApiController(Activity activity){
         this.activity = activity;
@@ -33,8 +34,9 @@ public class ApiController {
             @Override
             public void run() {
                 instagramApp.getFollowers(currentUser);
-                int i = instagramApp.getFollow(currentUser);
-                System.out.println("nb following : " + i);
+                instagramApp.getFollow(currentUser);
+                instagramApp.writeDataBase(currentUser);
+                stats = true;
             }
         });
         Thread t1 = new Thread(new Runnable() {
@@ -45,5 +47,8 @@ public class ApiController {
             }
         });
         t1.start();
+    }
+    public int[] getStats(){
+        return instagramApp.getStats();
     }
 }

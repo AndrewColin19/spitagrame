@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.spitagram.Modele.InstagramApi.Browser.BrowserLogin;
-import com.spitagram.Modele.InstagramApi.Config;
+import com.spitagram.Modele.InstagramApi.Utils;
 import com.spitagram.Modele.InstagramApi.InstagramLogin;
 import com.spitagram.R;
 
@@ -25,7 +25,7 @@ public class LoginController{
     public static boolean isconnected(Activity activity){
         String statut ;
         statut = getInstagramLogin(activity).connexionStatut();
-        if (statut.equals(Config.STATUT_CONNECTION_CONNECTER)){
+        if (statut.equals(Utils.STATUT_CONNECTION_CONNECTER)){
             connected = true;
         }else{
             connected = false;
@@ -65,7 +65,7 @@ public class LoginController{
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             browserLogin.setLayoutParams(params);
             content.addView(browserLogin);
-            browserLogin.load(Config.SITE_MAIN);
+            browserLogin.load(Utils.SITE_MAIN);
         }
     }
 }

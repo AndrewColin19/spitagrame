@@ -2,9 +2,12 @@ package com.spitagram.Vue;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import com.spitagram.Controller.SplashScreenController;
+import com.spitagram.Modele.AppConfig;
 import com.spitagram.R;
 
 public class SplashScreenActivity extends AppCompatActivity {
@@ -15,14 +18,23 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        splashText = findViewById(R.id.splashText);
-
-        SplashScreenController splashScreenController = new SplashScreenController(this);
-        splashScreenController.init(splashText);
+        if(AppConfig.DEBUG){
+            pass();
+        }else{
+            splashText = findViewById(R.id.splashText);
+            SplashScreenController splashScreenController = new SplashScreenController(this);
+            splashScreenController.init(splashText);
+        }
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+    }
+
+    private void pass(){
+        Intent intent = new Intent(this, MainActivity.class);
+        this.startActivity(intent);
+        this.finish();
     }
 }

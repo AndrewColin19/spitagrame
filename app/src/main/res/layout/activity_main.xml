@@ -53,6 +53,7 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/stats"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -74,9 +75,10 @@
 
             <RelativeLayout
                 android:id="@+id/cardNewFollowers"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:clickable="true"
                 android:layout_marginRight="@dimen/dual_maring"
                 android:background="@color/dark_gray"
                 android:padding="@dimen/medium_text"
@@ -94,7 +96,7 @@
                     android:id="@+id/textCardNewFollowers"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="value"
+                    android:text="@string/noValue"
                     android:textSize="@dimen/medium_text"
                     android:layout_below="@+id/iconCardNewFollowers"
                     android:textColor="@color/lite_gray"
@@ -103,9 +105,10 @@
             </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/cardLoseFollowers"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:clickable="true"
                 android:layout_marginLeft="@dimen/dual_maring"
                 android:background="@color/dark_gray"
                 android:padding="@dimen/medium_text">
@@ -122,7 +125,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/iconCardLoseFollowers"
-                    android:text="value"
+                    android:text="@string/noValue"
                     android:textSize="@dimen/medium_text"
                     android:textColor="@color/lite_gray"
                     android:layout_centerHorizontal="true"/>
@@ -142,10 +145,11 @@
 
             <RelativeLayout
                 android:id="@+id/cardFollow"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/dark_gray"
                 android:layout_weight="1"
+                android:clickable="true"
                 android:layout_marginRight="@dimen/dual_maring"
                 android:padding="@dimen/medium_text"
                 android:layout_marginEnd="@dimen/dual_maring">
@@ -162,7 +166,7 @@
                     android:id="@+id/textCardFollow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="value"
+                    android:text="@string/noValue"
                     android:layout_below="@+id/iconCardFollow"
                     android:textSize="@dimen/medium_text"
                     android:textColor="@color/lite_gray"
@@ -171,9 +175,10 @@
             </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/cardMutual"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:clickable="true"
                 android:layout_marginLeft="@dimen/dual_maring"
                 android:background="@color/dark_gray"
                 android:padding="@dimen/medium_text"
@@ -186,17 +191,17 @@
                     android:src="@drawable/icon_mutual"
                     android:layout_centerHorizontal="true"
                     android:contentDescription="icon desc card" />
+
                 <TextView
                     android:id="@+id/textCardMutual"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="value"
+                    android:text="@string/noValue"
                     android:layout_below="@+id/iconCardMutual"
                     android:textSize="@dimen/medium_text"
                     android:textColor="@color/lite_gray"
                     android:layout_centerHorizontal="true"/>
             </RelativeLayout>
         </LinearLayout>
-
     </LinearLayout>
 </RelativeLayout>
