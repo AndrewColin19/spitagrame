@@ -8,4 +8,5 @@
     <color name="dark_lite_gray">#495057</color>
     <color name="lite_gray">#adb5bd</color>
     <color name="blue">#118ab2</color>
+    <color name="invicible">#00FFFFFF</color>
 </resources>

@@ -14,16 +14,16 @@ public class DataBase extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     private static final String CREATE_TABLE_USER = "CREATE TABLE user ("
-            + " id int NOT NULL primary key ,"
+            + " id INTEGER NOT NULL primary key ,"
             + " username text NOT NULL ,"
             + " multicompte int"
             + ")";
     private static final String CREATE_TABLE_FOLLOW = "CREATE TABLE follow ("
-            + " id int NOT NULL primary key ,"
+            + " id INTEGER NOT NULL primary key ,"
             + " username text NOT NULL "
             + ")";
     private static final String CREATE_TABLE_FOLLOWERS = "CREATE TABLE followers ("
-            + " id int NOT NULL primary key ,"
+            + " id INTEGER NOT NULL primary key ,"
             + " username text NOT NULL "
             + ")";
     private static final String DROP_TABLE_USER = "DROP TABLE User";
@@ -60,7 +60,7 @@ public class DataBase extends SQLiteOpenHelper {
         if (cursor.getCount() != 0){
             cursor.moveToFirst();
             while(!cursor.isAfterLast()){
-                user = new User(cursor.getInt(cursor.getColumnIndex("id")),
+                user = new User(cursor.getLong(cursor.getColumnIndex("id")),
                         cursor.getString(cursor.getColumnIndex("username")));
                 cursor.moveToNext();
             }
@@ -68,6 +68,22 @@ public class DataBase extends SQLiteOpenHelper {
         cursor.close();
         return user;
     }
+    public User getFollowByName(String username){
+        User user = null;
+        String req = "SELECT * FROM follow WHERE username = '" + username + "'";
+        Cursor cursor = this.getReadableDatabase().rawQuery(req, null);
+        if (cursor.getCount() != 0){
+            cursor.moveToFirst();
+            while(!cursor.isAfterLast()){
+                user = new User(cursor.getLong(cursor.getColumnIndex("id")),
+                        cursor.getString(cursor.getColumnIndex("username")));
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        return user;
+    }
+
     public User getFollowers(User u){
         User user = null;
         String req = "SELECT * FROM followers WHERE id =" + u.getId();
@@ -75,7 +91,23 @@ public class DataBase extends SQLiteOpenHelper {
         if (cursor.getCount() != 0){
             cursor.moveToFirst();
             while(!cursor.isAfterLast()){
-                user = new User(cursor.getInt(cursor.getColumnIndex("id")),
+                user = new User(cursor.getLong(cursor.getColumnIndex("id")),
+                        cursor.getString(cursor.getColumnIndex("username")));
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        return user;
+    }
+
+    public User getFollowersByName(String username){
+        User user = null;
+        String req = "SELECT * FROM followers WHERE username = '" + username + "'";
+        Cursor cursor = this.getReadableDatabase().rawQuery(req, null);
+        if (cursor.getCount() != 0){
+            cursor.moveToFirst();
+            while(!cursor.isAfterLast()){
+                user = new User(cursor.getLong(cursor.getColumnIndex("id")),
                         cursor.getString(cursor.getColumnIndex("username")));
                 cursor.moveToNext();
             }
@@ -89,7 +121,7 @@ public class DataBase extends SQLiteOpenHelper {
         Cursor cursor = this.getReadableDatabase().rawQuery(req, null);
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
-            followList.add(new User(cursor.getInt(cursor.getColumnIndex("id")),
+            followList.add(new User(cursor.getLong(cursor.getColumnIndex("id")),
                     cursor.getString(cursor.getColumnIndex("username"))));
             cursor.moveToNext();
         }
@@ -103,7 +135,7 @@ public class DataBase extends SQLiteOpenHelper {
         Cursor cursor = this.getReadableDatabase().rawQuery(req, null);
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
-            followersList.add(new User(cursor.getInt(cursor.getColumnIndex("id")),
+            followersList.add(new User(cursor.getLong(cursor.getColumnIndex("id")),
                     cursor.getString(cursor.getColumnIndex("username"))));
             cursor.moveToNext();
         }

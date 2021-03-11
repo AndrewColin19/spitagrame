@@ -2,13 +2,18 @@ package com.spitagram.Controller;
 
 import android.app.Activity;
 
+import com.spitagram.Modele.AppConfig;
 import com.spitagram.Modele.InstagramApi.InstagramApp;
 import com.spitagram.Modele.InstagramApi.Users.CurrentUser;
+import com.spitagram.Modele.InstagramApi.Users.User;
+import com.spitagram.R;
+
+import java.net.UnknownServiceException;
 
 public class ApiController {
 
     private static final String TAG = "ApiController";
-    private InstagramApp instagramApp;
+    public InstagramApp instagramApp;
     private Activity activity;
     public static CurrentUser currentUser;
     public static boolean stats = false;
@@ -16,6 +21,7 @@ public class ApiController {
     public ApiController(Activity activity){
         this.activity = activity;
         getInstenceInstagramApi();
+        init();
     }
     public InstagramApp getInstenceInstagramApi(){
         if (instagramApp == null){
@@ -23,19 +29,12 @@ public class ApiController {
         }
         return instagramApp;
     }
-    public CurrentUser getInstenceCurrentUser(){
-        if (currentUser == null) {
-            return new CurrentUser();
-        }
-        return currentUser;
-    }
-    public void init(){
+
+    private void init(){
         final Thread t2 = new Thread(new Runnable() {
             @Override
             public void run() {
-                instagramApp.getFollowers(currentUser);
-                instagramApp.getFollow(currentUser);
-                instagramApp.writeDataBase(currentUser);
+                instagramApp.scrapDataUser(currentUser);
                 stats = true;
             }
         });
@@ -43,12 +42,32 @@ public class ApiController {
             @Override
             public void run() {
                 currentUser = getInstenceInstagramApi().setUser();
-                t2.start();
+                if (AppConfig.SCRAP_DATA){
+                    t2.start();
+                }
             }
         });
         t1.start();
     }
     public int[] getStats(){
         return instagramApp.getStats();
+    }
+
+    public void unfollowUser(long userId, int id) {
+        User user = currentUser.getUserFollow(userId);
+        instagramApp.actionClick(user.getUserName(), InstagramApp.ACTION_UNFOLLOW);
+
+        if (user != null) {
+            instagramApp.removeFollow(user);
+        }
+        if (id == R.id.cardLoseFollowers) {
+            currentUser.getLoseFollowersList().remove(user);
+        }
+    }
+    public void followUser(long userId){
+        User user = currentUser.getUserFollowers(userId);
+        instagramApp.actionClick(user.getUserName(), InstagramApp.ACTION_FOLLOW);
+        instagramApp.addFollow(user);
+        currentUser.getWinFollowersList().remove(user);
     }
 }

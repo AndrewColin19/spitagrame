@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Vue.MainActivity"
-    android:background="@color/dark_blue">
+    android:background="@color/dark_blue"
+    android:id="@+id/content">
 
     <RelativeLayout
         android:id="@+id/displayInfo"
@@ -50,7 +51,23 @@
             android:textSize="@dimen/little_text"
             android:layout_below="@+id/userFollow"
             android:layout_centerHorizontal="true"/>
+
+        <ImageView
+            android:id="@+id/imageUser"
+            android:layout_width="60dp"
+            android:layout_height="60dp" />
     </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="@dimen/dual_maring"
+        android:layout_below="@+id/displayInfo"
+        android:max="100"
+        android:min="0"/>
 
     <LinearLayout
         android:id="@+id/stats"
@@ -58,7 +75,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:weightSum="2"
-        android:layout_below="@+id/displayInfo">
+        android:layout_below="@+id/progressBar">
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -2,6 +2,28 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/dark_lite_gray"
+    android:padding="@dimen/dual_maring">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="@dimen/title"
+        android:text="test"
+        android:textColor="@color/lite_gray"
+        android:layout_marginBottom="@dimen/dual_maring"/>
+
+    <ListView
+        android:id="@+id/list_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:divider="@drawable/devider"
+        android:dividerHeight="5dp">
+
+    </ListView>
 
 </RelativeLayout>

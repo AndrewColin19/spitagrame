@@ -1,20 +1,21 @@
 package com.spitagram.Modele.InstagramApi.Users;
 
+import android.graphics.Bitmap;
+
 public class User {
-    public static String FOLLOW = "edge_follow";
-    public static String FOLLOWERS = "edge_followed_by";
-
     private String userName;
-    private String id;
+    private long id;
+    private Bitmap profilImg;
 
-    public User(String id, String userName){
+    public User(long id, String userName){
         this.id = id;
 
         this.userName = userName;
     }
-    public User(int id, String userName){
-        this.id = String.valueOf(id);
+    public User(long id, String userName, Bitmap bitmap){
+        this.id = id;
         this.userName = userName;
+        this.profilImg = bitmap;
     }
     public User(){
     }
@@ -30,11 +31,19 @@ public class User {
         this.userName = userName;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
+    }
+
+    public Bitmap getProfilImg() {
+        return profilImg;
+    }
+
+    public void setProfilImg(Bitmap profilImg) {
+        this.profilImg = profilImg;
     }
 }

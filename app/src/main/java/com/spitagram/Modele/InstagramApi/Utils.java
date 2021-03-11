@@ -2,7 +2,6 @@ package com.spitagram.Modele.InstagramApi;
 
 public class Utils {
     public static String SITE_MAIN = "https://www.instagram.com/";
-    public static String CLASSIC_LOGIN = "https://www.instagram.com/accounts/login/?force_classic_login";
 
     public static String LOGIN_PASS = "https://www.instagram.com/accounts/onetap/?next=%2F";
     public static String LOGIN_PASS_FACEBOOK = "https://graph.instagram.com/logging_client_events";
@@ -19,10 +18,9 @@ public class Utils {
     public static String STATUT_CONNECTION_DECONNECTER = "deconnecter";
     public static String STATUT_CONNECTION_FAIL = "fail";
 
-    public static String JSON_KEY_FOLLOW = "edge_follow";
-    public static String JSON_KEY_FOLLOWERS = "edge_followed_by";
-    public static String NAME_COMPTE = "pepperlapinebelier";
 
-    public static int REFRECH_SECONDE = 25000;
-    public static int NB_USER_TAKEN = 10000;
+    public static String NAME_COMPTE = "pepperlapinebelier";// a modifier
+
+    public static int REFRECH_SECONDE = 25000;//ms
+    public static int NB_USER_TAKEN = 1000;
 }
