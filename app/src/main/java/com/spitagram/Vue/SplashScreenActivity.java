@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.widget.TextView;
 import com.spitagram.Controller.SplashScreenController;
 import com.spitagram.Modele.AppConfig;
-import com.spitagram.Modele.DataBase;
 import com.spitagram.R;
 
 public class SplashScreenActivity extends AppCompatActivity {
@@ -23,7 +22,6 @@ public class SplashScreenActivity extends AppCompatActivity {
             pass();
         }else{
             splashText = findViewById(R.id.splashText);
-            //new DataBase(this).reset();
             SplashScreenController splashScreenController = new SplashScreenController(this);
             splashScreenController.init(splashText);
 

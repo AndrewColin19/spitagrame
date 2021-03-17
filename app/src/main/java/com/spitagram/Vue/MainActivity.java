@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //user test {wes.off__, pepperlapinebelier, marieamelie.wen, annickd06}
 
         this.findView();
 
@@ -61,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (AppConfig.DEBUG){
                     ApiController. currentUser.getWinFollowersList().add(new User(1, "pepito_enerver_qui_a_un_gros_pseudo"));
-                    ApiController.currentUser.getLoseFollowersList().add(new User(1, "pepito1"));
-                    ApiController.currentUser.getLoseFollowersList().add(new User(1, "pepito2"));
+                    ApiController.currentUser.getLoseFollowersList().add(new User(101, "pepito1"));
+                    ApiController.currentUser.getLoseFollowersList().add(new User(102, "pepito2"));
 
                     apiController.currentUser.getMutualList().add(new User(1, "pepito4"));
                     apiController.currentUser.getMutualList().add(new User(1, "pepito5"));
@@ -133,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.cardFollow:
                         Log.d(TAG, "onClick: card follow");
-                        customPopList.show("New Follow", ApiController.currentUser.getNewFollowList(), R.id.cardFollow);
+                        customPopList.show("New Follow", ApiController.currentUser.getNoFollowBackList(), R.id.cardFollow);
                         break;
                     case R.id.cardMutual:
                         Log.d(TAG, "onClick: card mutual");

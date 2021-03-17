@@ -15,7 +15,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
-import java.net.UnknownServiceException;
 import java.util.ArrayList;
 
 public class InstagramApp{
@@ -23,6 +22,7 @@ public class InstagramApp{
     private Activity activity;
     public Browser browser;
     private DataBase dataBase;
+    private boolean newUser = false;
     public static final String ACTION_FOLLOW = "follow_user";
     public static final String ACTION_UNFOLLOW = "unfollow_user";
     public static String JSON_KEY_FOLLOW = "edge_follow";
@@ -51,7 +51,9 @@ public class InstagramApp{
         this.getFollowers(currentUser);
         this.getFollow(currentUser);
         this.setStats();
-        this.writeDataBase(currentUser);
+        if (newUser){
+            this.writeDataBase(currentUser);
+        }
     }
 
     /**
@@ -78,8 +80,14 @@ public class InstagramApp{
             //recupere l'image de profile
             currentUser.setUserImg(loadBitmap(reader.getJSONObject("graphql")
                     .getJSONObject("user").getString("profile_pic_url")));
+
+            if (dataBase.getUser(currentUser) == null){
+                dataBase.insertUser(currentUser);
+                newUser = true;
+                Log.d(TAG, "setUser: new user");
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.d(TAG, "setUser: " + e);
         }
         return currentUser;
     }
@@ -127,6 +135,8 @@ public class InstagramApp{
      */
     public void getFollowers(CurrentUser user){
         user.setFollowersList(getUserList(JSON_KEY_FOLLOWERS));
+        Log.d(TAG, "getFollowers: new list size : " + user.getFollowersList().size());
+        Log.d(TAG, "getFollowers: old list size : " + dataBase.getNbFollowers());
     }
 
     /**
@@ -177,15 +187,30 @@ public class InstagramApp{
                     endCursor = pageInfo.getString("end_cursor");
                 }
                 //recupe le tableau des abonnées
-                JSONArray followerTab = reader.getJSONObject("data")
+                final JSONArray followerTab = reader.getJSONObject("data")
                         .getJSONObject("user")
                         .getJSONObject(type)
                         .getJSONArray("edges");
                 for (int i = 0; i < followerTab.length(); i++) {
+                    final User u = new User();
                     String id = followerTab.getJSONObject(i).getJSONObject("node").getString("id");
                     String username = followerTab.getJSONObject(i).getJSONObject("node").getString("username");
-                    //Bitmap imgProfile = loadBitmap(followerTab.getJSONObject(i).getJSONObject("node").getString("profile_pic_url"));
-                    userList.add(new User(Long.parseLong(id), username/*, imgProfile*/));
+                    final int position = i;
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try{
+                                Bitmap imgProfile = loadBitmap(followerTab.getJSONObject(position).getJSONObject("node").getString("profile_pic_url"));
+                                u.setProfilImg(imgProfile);
+                            }catch (Exception e){
+                                Log.d(TAG, "thread bitmap: error");
+                            }
+                        }
+                    }).start();
+                    u.setId(Long.parseLong(id));
+                    u.setUserName(username);
+                    u.setUserMain(user.getId());
+                    userList.add(u);
                 }
                 progressPurcent += ((followerTab.length()*100)/max)/2;
             } catch(Exception e){
@@ -198,28 +223,20 @@ public class InstagramApp{
 
     /**
      * ajoute les données a la base seulement si il n'y sont pas déja
-     * @param user
+     * @param currentUser
      */
-    public void writeDataBase(CurrentUser user){
-        //Log.d(TAG, "writeDataBase: new size : " + user.getFollowList().size());
-        //Log.d(TAG, "writeDataBase: new size followers : " + user.getFollowersList().size());
-        /*int i = 0;
-        int j = 0;*/
-        for (User u : user.getFollowersList()){
-            if (dataBase.getFollowers(u) == null){
+    public void writeDataBase(CurrentUser currentUser){
+        for (User u : currentUser.getFollowersList()){
+            if (dataBase.getFollowers(currentUser, u) == null){
                 dataBase.insertFollowers(u);
-                //j++;
             }
         }
-        //Log.d(TAG, "writeDataBase: insert followers : " + j);
-        for (User u: user.getFollowList()){
-            if (dataBase.getFollow(u) == null){
+        for (User u: currentUser.getFollowList()){
+            if (dataBase.getFollow(currentUser, u) == null){
                 dataBase.insertFollow(u);
-                //i++;
             }
-            //Log.d(TAG, "writeDataBase: follow id : " + u.getId() + " name : " + u.getUserName());
         }
-        //Log.d(TAG, "writeDataBase: insert : " + i);
+        newUser = false;
     }
 
     /**
@@ -259,6 +276,7 @@ public class InstagramApp{
         }
         return lose;
     }
+
     private ArrayList<User> getNewFollowers(ArrayList<User> newFollowersList, ArrayList<User> oldFollowersList){
         ArrayList<User> win = new ArrayList<>();
         for (User u : newFollowersList){
@@ -274,24 +292,39 @@ public class InstagramApp{
         }
         return win;
     }
-    private int getNewFollow(){
-        return ApiController.currentUser.getFollowList().size() - dataBase.getNbFollow();
+    private ArrayList<User> getNoFollowBack(){
+        ArrayList<User> follow = ApiController.currentUser.getFollowList();
+        ArrayList<User> followers = ApiController.currentUser.getFollowersList();
+        ArrayList<User> noFollowBackList = new ArrayList<>();
+        for (User u : follow){
+            boolean test = false;
+            for (User user : followers) {
+                if (u.getId() == user.getId()) {
+                    test = true;
+                }
+            }
+            if (!test){
+                noFollowBackList.add(u);
+            }
+        }
+        return noFollowBackList;
     }
 
     private void setStats(){
         ArrayList<User> newFollowersList = ApiController.currentUser.getFollowersList();
-        ArrayList<User> oldFollowersList = dataBase.getAllFollowers();
+        ArrayList<User> oldFollowersList = dataBase.getAllFollowers(ApiController.currentUser);
         ApiController.currentUser.setLoseFollowersList(getLosefollowers(newFollowersList, oldFollowersList));
         ApiController.currentUser.setWinFollowersList(getNewFollowers(newFollowersList, oldFollowersList));
         ApiController.currentUser.setMutualList(getMutual());
+        ApiController.currentUser.setNoFollowBackList(getNoFollowBack());
     }
 
     public int[] getStats(){
-        int newfollow = getNewFollow();
+        int noFollowBack = ApiController.currentUser.getNoFollowBackList().size();
         int newfollwers = ApiController.currentUser.getWinFollowersList().size();
         int Losefollowers = ApiController.currentUser.getLoseFollowersList().size();
         int mutual = ApiController.currentUser.getMutualList().size();
-        int[] stats = {newfollwers, Losefollowers, newfollow, mutual};
+        int[] stats = {newfollwers, Losefollowers, noFollowBack, mutual};
         return stats;
     }
 
@@ -305,13 +338,11 @@ public class InstagramApp{
         Bitmap mIcon_val = null;
         try{
             URL req = new URL(url);
-
             mIcon_val = BitmapFactory.decodeStream(req.openConnection()
                     .getInputStream());
         }catch (Exception e){
             e.printStackTrace();
         }
-
         return mIcon_val;
     }
 
@@ -320,23 +351,25 @@ public class InstagramApp{
     }
 
     public void addFollowers(User newFollowers){
-        if (dataBase.getFollowers(newFollowers) == null){
+        if (dataBase.getFollowers(ApiController.currentUser, newFollowers) == null){
             dataBase.insertFollowers(newFollowers);
         }
     }
     public void addFollow(User newFollow){
-        if (dataBase.getFollow(newFollow) == null){
+        if (dataBase.getFollow(ApiController.currentUser, newFollow) == null){
             dataBase.insertFollow(newFollow);
+            Log.d(TAG, "addFollow: ajouter");
         }
     }
     public void removeFollowers(User followers){
-        if (dataBase.getFollowers(followers) != null){
+        if (dataBase.getFollowers(ApiController.currentUser, followers) != null){
             dataBase.deleteFollowers(followers);
         }
     }
 
     public void removeFollow(User follow){
-        if (dataBase.getFollow(follow) != null){
+
+        if (dataBase.getFollow(ApiController.currentUser, follow) != null){
             dataBase.deleteFollow(follow);
         }
     }

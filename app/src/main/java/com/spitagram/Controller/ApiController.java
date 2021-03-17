@@ -8,7 +8,6 @@ import com.spitagram.Modele.InstagramApi.Users.CurrentUser;
 import com.spitagram.Modele.InstagramApi.Users.User;
 import com.spitagram.R;
 
-import java.net.UnknownServiceException;
 
 public class ApiController {
 
@@ -54,20 +53,25 @@ public class ApiController {
     }
 
     public void unfollowUser(long userId, int id) {
-        User user = currentUser.getUserFollow(userId);
-        instagramApp.actionClick(user.getUserName(), InstagramApp.ACTION_UNFOLLOW);
-
-        if (user != null) {
-            instagramApp.removeFollow(user);
+        User user = null;
+        if (id == R.id.cardFollow) {
+            user = currentUser.getUserNoFollowBack(userId);
+            currentUser.getNoFollowBackList().remove(user);
         }
         if (id == R.id.cardLoseFollowers) {
+            user = currentUser.getUserLose(userId);
             currentUser.getLoseFollowersList().remove(user);
         }
+        instagramApp.actionClick(user.getUserName(), InstagramApp.ACTION_UNFOLLOW);
+        instagramApp.removeFollowers(user);
+        instagramApp.removeFollow(user);
+
     }
     public void followUser(long userId){
         User user = currentUser.getUserFollowers(userId);
         instagramApp.actionClick(user.getUserName(), InstagramApp.ACTION_FOLLOW);
         instagramApp.addFollow(user);
+        instagramApp.addFollowers(user);
         currentUser.getWinFollowersList().remove(user);
     }
 }

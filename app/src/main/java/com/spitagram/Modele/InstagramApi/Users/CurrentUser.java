@@ -11,7 +11,7 @@ public class CurrentUser extends User{
     private ArrayList<User> followList = new ArrayList<>();
     private ArrayList<User> winFollowersList = new ArrayList<>();
     private ArrayList<User> loseFollowersList = new ArrayList<>();
-    private ArrayList<User> newFollowList = new ArrayList<>();
+    private ArrayList<User> noFollowBackList = new ArrayList<>();
     private ArrayList<User> mutualList = new ArrayList<>();
 
     //constructeur
@@ -21,13 +21,17 @@ public class CurrentUser extends User{
         super(userName);
     }
 
+    public CurrentUser(long id, String username){
+        super(id, username);
+    }
+
     @Override
     public String toString() {
-        return "InstagramUser{" +
-                "userName='" + getUserName() + '\'' +
-                ", id='" + getId() + '\'' +
-                ", follow='" + nbFollow + '\'' +
-                ", followers='" + nbFollowers + '\'' +
+        return "CurrentUser{" +
+                "nbFollow='" + nbFollow + '\'' +
+                ", nbFollowers='" + nbFollowers + '\'' +
+                ", userImg=" + userImg +
+                ", id=" + this.getId() +
                 '}';
     }
 
@@ -72,12 +76,12 @@ public class CurrentUser extends User{
         this.winFollowersList = winFollowersList;
     }
 
-    public ArrayList<User> getNewFollowList() {
-        return newFollowList;
+    public ArrayList<User> getNoFollowBackList() {
+        return noFollowBackList;
     }
 
-    public void setNewFollowList(ArrayList<User> newFollowList) {
-        this.newFollowList = newFollowList;
+    public void setNoFollowBackList(ArrayList<User> noFollowBackList) {
+        this.noFollowBackList = noFollowBackList;
     }
 
     public ArrayList<User> getLoseFollowersList() {
@@ -107,7 +111,7 @@ public class CurrentUser extends User{
     public User getUserFollow(long userId){
         User userFollow = null;
         for (User u: this.getFollowList()){
-            if (u.getId()== userId){
+            if (u.getId() == userId){
                 userFollow = u;
             }
         }
@@ -121,5 +125,23 @@ public class CurrentUser extends User{
             }
         }
         return userFollowers;
+    }
+    public User getUserLose(long userId){
+        User userFollowers = null;
+        for (User u: loseFollowersList){
+            if (u.getId() == userId){
+                userFollowers = u;
+            }
+        }
+        return userFollowers;
+    }
+    public User getUserNoFollowBack(long userId){
+        User userNoFollowBack = null;
+        for (User u: noFollowBackList){
+            if (u.getId() == userId){
+                userNoFollowBack = u;
+            }
+        }
+        return userNoFollowBack;
     }
 }
